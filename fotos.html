@@ -112,34 +112,46 @@
             'img/IMG_9702.jpg',
             'img/IMG_9993.jpg',
         ];
-        
+    
         let errorBoxes = [];
         let usedImages = new Set();
         let gridVisible = false;
-        
+        let preloadedImages = [];
+    
+        // Precargar todas las imágenes
+        function preloadImages() {
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                preloadedImages.push(img);
+            });
+        }
+    
+        window.onload = preloadImages; // Iniciar la precarga al cargar la página
+    
         function createErrorBox() {
             if (usedImages.size >= images.length) return;
-            
+    
             let availableImages = images.filter(img => !usedImages.has(img));
             let src = availableImages[Math.floor(Math.random() * availableImages.length)];
             usedImages.add(src);
-            
+    
             const box = document.createElement('div');
             box.className = 'error-box';
-            
+    
             // Tamaño de la imagen
             const boxWidth = 266;
             const boxHeight = 200;
-            
+    
             // Intentar colocar la imagen en una posición que no se superponga
             let attempts = 0;
             let positionFound = false;
             let left, top;
-            
+    
             while (!positionFound && attempts < 100) {
                 left = Math.random() * (window.innerWidth - boxWidth);
                 top = Math.random() * (window.innerHeight - boxHeight - 60) + 60; // Restar 60px para el espacio del botón
-                
+    
                 // Verificar si la nueva posición se superpone con otras imágenes
                 let overlap = false;
                 for (let existingBox of errorBoxes) {
@@ -150,7 +162,7 @@
                         right: parseFloat(existingBox.style.left) + boxWidth,
                         bottom: parseFloat(existingBox.style.top) + boxHeight
                     };
-                    
+    
                     if (!(rect1.right < rect2.left || 
                           rect1.left > rect2.right || 
                           rect1.bottom < rect2.top || 
@@ -159,32 +171,32 @@
                         break;
                     }
                 }
-                
+    
                 if (!overlap) {
                     positionFound = true;
                 }
                 attempts++;
             }
-            
+    
             if (!positionFound) {
                 // Si no se encuentra una posición después de 100 intentos, colocar en una posición aleatoria
                 left = Math.random() * (window.innerWidth - boxWidth);
                 top = Math.random() * (window.innerHeight - boxHeight - 60) + 60;
             }
-            
+    
             box.style.left = `${left}px`;
             box.style.top = `${top}px`;
-            
+    
             const img = document.createElement('img');
             img.src = src;
             img.onclick = () => toggleImageSize(img);
             img.ondblclick = () => box.remove();
-            
+    
             box.appendChild(img);
             document.body.appendChild(box);
             errorBoxes.push(box);
         }
-        
+    
         function startErrorLoop() {
             let count = 0;
             function generateError() {
@@ -195,24 +207,24 @@
             }
             generateError();
         }
-        
+    
         function toggleImageSize(img) {
             document.querySelectorAll('.expanded').forEach(el => el.remove());
-            
+    
             const expandedContainer = document.createElement('div');
             expandedContainer.className = 'expanded';
-            
+    
             const expandedImg = document.createElement('img');
             expandedImg.src = img.src;
             expandedImg.style.maxWidth = '70vw';
             expandedImg.style.maxHeight = '60vh';
             expandedImg.style.display = 'block';
-            
+    
             expandedContainer.appendChild(expandedImg);
             expandedContainer.onclick = () => expandedContainer.remove();
             document.body.appendChild(expandedContainer);
         }
-        
+    
         function toggleOrganizeErrors() {
             const grid = document.getElementById('grid');
             if (gridVisible) {
@@ -235,9 +247,11 @@
             grid.style.display = 'grid';
             gridVisible = true;
         }
+    
         function tornar() {
             window.location.href = 'index.html';
         }
     </script>
+    
 </body>
 </html>
