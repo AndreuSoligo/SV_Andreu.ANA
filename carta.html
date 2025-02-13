@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 Ana 💖</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffdde1;
+            font-family: 'Clash Display', sans-serif;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .button-container {
+            position: fixed;
+            top: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .button {
+            background-color: #ff4081;
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 500;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            font-size: 17px;
+            cursor: pointer;
+            border-radius: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #e60073;
+        }
+        .container {
+            position: relative;
+            height: 96vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 30px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            width: 50%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border: 3px solid #ff4081;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInScale 1s ease-out forwards;
+        }
+        .card::before {
+            content: '💗';
+            color: rgb(250, 46, 46);
+            font-size: 40px;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .photo {
+            width: 50%;
+            max-width: 36vh;
+            margin-top: 20px;
+            border-radius: 10px;
+            border: 3px solid #ff4081;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideUp 1s ease-out 0.5s forwards;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(50px); }
+            60% { transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Corazones animados */
+        .heart {
+            position: absolute;
+            color: red;
+            font-size: 20px;
+            animation: floatUp 4s linear infinite;
+            opacity: 0.7;
+            z-index: -1;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button class="button" onclick="window.location.href='index.html'">Inici</button>
+        <button class="button" onclick="window.location.href='fotos.html'">Fotos</button>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h2>Per a Ana María Bordàs Tena ❤️</h2>
+            <p>Te vullc molt Aniita. De tu cojito que algun dia podrá caminar. Per totes aquelles vegades que te trobat a faltar i te he dit que no. <b>T'estimo Moltissim Guapissimaaaa 💖</b></p>
+            <p style="font-weight: 600;">ANDREU VICENT FAUBEL SOLIGÓ</p>
+        </div>
+        <img class="photo" src="img/IMG_0534.jpg" alt="Foto especial">
+    </div>
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '💗';
+            document.body.appendChild(heart);
+            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            
+            setTimeout(() => heart.remove(), 4000);
+        }
+        setInterval(createHeart, 300);
+    </script>
+</body>
+</html>
