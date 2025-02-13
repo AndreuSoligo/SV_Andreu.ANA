@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <title>💖 Ana 💖</title>
+    <style>
+        body {
+            background-color: #ffdde1;
+            text-align: center;
+            font-family: 'Clash Display', sans-serif;
+            color: #d63384;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-top: 50px;
+        }
+        h2 {
+            font-size: 3.1rem;
+            font-weight: 600;
+            margin-top: -20px;
+        }
+        button {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 14px 23px;
+            font-size: 19px;
+            cursor: pointer;
+            border-radius: 24px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 500;
+        }
+        button:hover {
+            background-color: #e60073;
+            transform: scale(1.1);
+        }
+        .floating-heart {
+            position: absolute;
+            color: #ff1493;
+            font-size: 24px;
+            animation: float 5s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+        .rocket-heart {
+            position: absolute;
+            font-size: 30px;
+            opacity: 1;
+            left: 50vw;
+            bottom: 0;
+            animation: ascend 3s ease-in forwards;
+        }
+        @keyframes ascend {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(calc(30vh + var(--randomHeight))) scale(1); opacity: 1; }
+        }
+        .firework-heart {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0;
+            animation: explode 1.5s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1.5); }
+        }
+        /* Estils per a la mascletà */
+        .firework, .pink-firework, .kiss-firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            bottom: 0;
+            animation: ascend 1.5s ease-out forwards;
+        }
+        .pink-firework {
+            background-color: pink;
+        }
+        .kiss-firework {
+            background-color: red;
+        }
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 1;
+            animation: disperse 1.5s ease-out forwards;
+        }
+        @keyframes ascend {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(var(--ascendHeight)); opacity: 0; }
+        }
+        @keyframes disperse {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--translateX), var(--translateY)) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>💖  Feliç Sant Valentí  💖</h1>
+    <h2>💋 Aniiitta 💋</h2>
+    
+    <button onclick="crearExplosio()">🎆 Apreta 🎆</button><br><br>
+    <button style="margin-top: 10px;" onclick="fotos()" >💖 Fotos 💖</button>
+
+    <script>
+        // Funció per a l'animació de coets i explosions
+        function crearExplosio() {
+            // Iniciar la mascletà de cors
+            startMascleta();
+        }
+
+        // Funció per a crear cors flotants
+        function crearCorFlotant() {
+            const heart = document.createElement("div");
+            heart.classList.add("floating-heart");
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 3 + 2 + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
+        }
+        setInterval(crearCorFlotant, 300);
+
+        // Funcions per a la mascletà de cors
+        function createFirework() {
+            const x = Math.random() * window.innerWidth;
+            const ascendHeight = -((Math.random() * 20 + 40) * window.innerHeight / 100) + 'px';
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            firework.style.left = `${x}px`;
+            firework.style.setProperty('--ascendHeight', ascendHeight);
+            document.body.appendChild(firework);
+            setTimeout(() => {
+                firework.remove();
+                createHeartExplosion(x, parseFloat(ascendHeight) + window.innerHeight);
+            }, 1200);
+        }
+
+        function createHeartExplosion(x, y) {
+            const numHearts = 30;
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                heart.style.fontSize = `${Math.random() * 14 + 16}px`;
+                heart.style.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                
+                const t = (i / numHearts) * 2 * Math.PI;
+                const scale = 40;
+                const translateX = scale * (16 * Math.pow(Math.sin(t), 3));
+                const translateY = -scale * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                
+                heart.style.setProperty('--translateX', `${translateX}px`);
+                heart.style.setProperty('--translateY', `${translateY}px`);
+                
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1500);
+            }
+        }
+
+        function createPinkFirework() {
+            const x = Math.random() * window.innerWidth;
+            const ascendHeight = -((Math.random() * 20 + 40) * window.innerHeight / 100) + 'px';
+            const firework = document.createElement('div');
+            firework.classList.add('pink-firework');
+            firework.style.left = `${x}px`;
+            firework.style.setProperty('--ascendHeight', ascendHeight);
+            document.body.appendChild(firework);
+            setTimeout(() => {
+                firework.remove();
+                createPinkExplosion(x, parseFloat(ascendHeight) + window.innerHeight);
+            }, 1200);
+        }
+
+        function createPinkExplosion(x, y) {
+            const numHearts = 30;
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '💗';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                heart.style.fontSize = `${Math.random() * 14 + 26}px`;
+                heart.style.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                
+                const t = (i / numHearts) * 2 * Math.PI;
+                const scale = 20;
+                const translateX = scale * (16 * Math.pow(Math.sin(t), 3));
+                const translateY = -scale * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                
+                heart.style.setProperty('--translateX', `${translateX}px`);
+                heart.style.setProperty('--translateY', `${translateY}px`);
+                
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1200);
+            }
+        }
+
+        function createKissFirework() {
+            const x = Math.random() * window.innerWidth;
+            const ascendHeight = -((Math.random() * 20 + 40) * window.innerHeight / 100) + 'px';
+            const firework = document.createElement('div');
+            firework.classList.add('kiss-firework');
+            firework.style.left = `${x}px`;
+            firework.style.setProperty('--ascendHeight', ascendHeight);
+            document.body.appendChild(firework);
+            setTimeout(() => {
+                firework.remove();
+                createKissExplosion(x, parseFloat(ascendHeight) + window.innerHeight);
+            }, 1200);
+        }
+
+        function createKissExplosion(x, y) {
+            const numHearts = 30;
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '💋';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                heart.style.fontSize = `${Math.random() * 14 + 20}px`;
+                heart.style.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                
+                const t = (i / numHearts) * 2 * Math.PI;
+                const scale = 20;
+                const translateX = scale * (16 * Math.pow(Math.sin(t), 3));
+                const translateY = -scale * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                
+                heart.style.setProperty('--translateX', `${translateX}px`);
+                heart.style.setProperty('--translateY', `${translateY}px`);
+                
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1100);
+            }
+        }
+
+        // Duración de la mascletà en milisegundos (10 segundos)
+        const duracionMascleta = 10000;
+
+        // Duración del final de traca (últimos 2 segundos)
+        const duracionFinalTraca = 2000;
+
+         // Función para el final de traca
+    function finalTraca() {
+        const intervaloRapido1 = setInterval(createFirework, 400); // Fuegos cada 100 ms
+        const intervaloRapido2 = setInterval(createPinkFirework, 500); // Fuegos cada 120 ms
+        const intervaloRapido3 = setInterval(createKissFirework, 600); // Fuegos cada 140 ms
+
+        // Detener los intervalos rápidos después de la duración del final de traca
+        setTimeout(() => {
+            clearInterval(intervaloRapido1);
+            clearInterval(intervaloRapido2);
+            clearInterval(intervaloRapido3);
+        }, duracionFinalTraca);
+    }
+
+    function startMascleta() {
+        const intervalo1 = setInterval(createFirework, 1000);
+        const intervalo2 = setInterval(createPinkFirework, 1200);
+        const intervalo3 = setInterval(createKissFirework, 1400);
+
+        // Activar el final de traca justo antes de que termine la mascletà
+        setTimeout(() => {
+            clearInterval(intervalo1);
+            clearInterval(intervalo2);
+            clearInterval(intervalo3);
+            finalTraca(); // Iniciar el final de traca
+        }, duracionMascleta - duracionFinalTraca);
+    }
+
+        function fotos() {
+            window.location.href = 'fotos.html';
+        }
+
+    </script>
+</body>
+</html>

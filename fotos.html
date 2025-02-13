@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <title>💖 FOTOS 💖</title>
+    <style>
+        body {
+            background-color: #ffdde1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 85vh;
+            flex-direction: column;
+            padding-top: 60px;
+            position: relative;
+        }
+        .button-container {
+            position: fixed;
+            top: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .error-box {
+            position: absolute;
+            background: white;
+            border: 4px solid rgb(38, 38, 38);
+            padding: 10px;
+            width: 266px;
+            height: 200px;
+            text-align: center;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        .error-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 5px solid rgb(23, 23, 23);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+        .grid-container {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-gap: 10px;
+            background: rgb(35, 35, 35);
+            padding: 10px;
+            margin-top: 60px;
+            border: 4px solid rgb(255, 255, 255);
+            border-radius: 15px;
+            width: 100vw;
+            max-width: 1200px;
+        }
+
+        .grid-container img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        button {
+            background-color: #ff4081;
+            font-family: 'Clash Display', sans-serif;
+            font-weight: 500;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            font-size: 17px;
+            cursor: pointer;
+            border-radius: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #e60073;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button onclick="tornar()">Tornar</button>
+        <button onclick="startErrorLoop()">Generar Fotos</button>
+        <button ondblclick="closeApp()" onclick="toggleOrganizeErrors()">Album</button>
+    </div>
+    <div id="grid" class="grid-container"></div>
+    
+    <script>
+        let images = [
+            'img/DVFM2989.JPG',
+            'img/FIMP0194.JPG',
+            'img/FTSG9756.HEIC',
+            'img/IAJO4270.JPG',
+            'img/IMG_0093.HEIC',
+            'img/IMG_0225.HEIC',
+            'img/IMG_0973.HEIC',
+            'img/IMG_1252 2.JPG',
+            'img/IMG_3283.HEIC',
+            'img/IMG_4239.HEIC',
+            'img/IMG_9702.JPG',
+            'img/NUXW6395.JPG'
+        ];
+        
+        let errorBoxes = [];
+        let usedImages = new Set();
+        let gridVisible = false;
+        
+        function createErrorBox() {
+            if (usedImages.size >= images.length) return;
+            
+            let availableImages = images.filter(img => !usedImages.has(img));
+            let src = availableImages[Math.floor(Math.random() * availableImages.length)];
+            usedImages.add(src);
+            
+            const box = document.createElement('div');
+            box.className = 'error-box';
+            
+            // Tamaño de la imagen
+            const boxWidth = 266;
+            const boxHeight = 200;
+            
+            // Intentar colocar la imagen en una posición que no se superponga
+            let attempts = 0;
+            let positionFound = false;
+            let left, top;
+            
+            while (!positionFound && attempts < 100) {
+                left = Math.random() * (window.innerWidth - boxWidth);
+                top = Math.random() * (window.innerHeight - boxHeight - 60) + 60; // Restar 60px para el espacio del botón
+                
+                // Verificar si la nueva posición se superpone con otras imágenes
+                let overlap = false;
+                for (let existingBox of errorBoxes) {
+                    const rect1 = { left, top, right: left + boxWidth, bottom: top + boxHeight };
+                    const rect2 = {
+                        left: parseFloat(existingBox.style.left),
+                        top: parseFloat(existingBox.style.top),
+                        right: parseFloat(existingBox.style.left) + boxWidth,
+                        bottom: parseFloat(existingBox.style.top) + boxHeight
+                    };
+                    
+                    if (!(rect1.right < rect2.left || 
+                          rect1.left > rect2.right || 
+                          rect1.bottom < rect2.top || 
+                          rect1.top > rect2.bottom)) {
+                        overlap = true;
+                        break;
+                    }
+                }
+                
+                if (!overlap) {
+                    positionFound = true;
+                }
+                attempts++;
+            }
+            
+            if (!positionFound) {
+                // Si no se encuentra una posición después de 100 intentos, colocar en una posición aleatoria
+                left = Math.random() * (window.innerWidth - boxWidth);
+                top = Math.random() * (window.innerHeight - boxHeight - 60) + 60;
+            }
+            
+            box.style.left = `${left}px`;
+            box.style.top = `${top}px`;
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.onclick = () => toggleImageSize(img);
+            img.ondblclick = () => box.remove();
+            
+            box.appendChild(img);
+            document.body.appendChild(box);
+            errorBoxes.push(box);
+        }
+        
+        function startErrorLoop() {
+            let count = 0;
+            function generateError() {
+                if (count >= images.length) return;
+                createErrorBox();
+                count++;
+                setTimeout(generateError, Math.random() * 800 + 200);
+            }
+            generateError();
+        }
+        
+        function toggleImageSize(img) {
+            document.querySelectorAll('.expanded').forEach(el => el.remove());
+            
+            const expandedContainer = document.createElement('div');
+            expandedContainer.className = 'expanded';
+            
+            const expandedImg = document.createElement('img');
+            expandedImg.src = img.src;
+            expandedImg.style.maxWidth = '70vw';
+            expandedImg.style.maxHeight = '60vh';
+            expandedImg.style.display = 'block';
+            
+            expandedContainer.appendChild(expandedImg);
+            expandedContainer.onclick = () => expandedContainer.remove();
+            document.body.appendChild(expandedContainer);
+        }
+        
+        function toggleOrganizeErrors() {
+            const grid = document.getElementById('grid');
+            if (gridVisible) {
+                grid.style.display = 'none';
+                gridVisible = false;
+                usedImages.clear(); // Restablecer imágenes usadas
+                return;
+            }
+            grid.innerHTML = '';
+            errorBoxes.forEach(box => {
+                const img = box.querySelector('img').cloneNode(true);
+                img.style.width = '95%';
+                img.style.height = '370px';
+                const gridItem = document.createElement('div');
+                gridItem.appendChild(img);
+                grid.appendChild(gridItem);
+                box.remove();
+            });
+            errorBoxes = [];
+            grid.style.display = 'grid';
+            gridVisible = true;
+        }
+        function tornar() {
+            window.location.href = 'San_Valentin.html';
+        }
+    </script>
+</body>
+</html>
